@@ -8,12 +8,14 @@ import {
   type Node,
   type NodeProps,
   type NodeTypes,
+  useReactFlow,
+  useStore,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { GroundworkMap, Id, MapNode } from '../map/types'
 import type { Level } from '../progress/levels'
-import { layoutMap, NODE_HEIGHT, NODE_WIDTH } from './layout'
+import { layoutMap, NODE_HEIGHT, NODE_WIDTH, type Point } from './layout'
 import { levelStyle } from './levelStyle'
 
 type TopicFlowNode = Node<
@@ -101,9 +103,43 @@ export function MapView({
         minZoom={0.2}
       >
         <Controls showInteractive={false} />
+        <KeepInView
+          position={selectedId ? layout.positions.get(selectedId) : undefined}
+        />
       </ReactFlow>
     </div>
   )
+}
+
+/**
+ * When the selected node isn't fully visible (for example, because the panel
+ * just opened and narrowed the map), center it without changing the zoom.
+ */
+function KeepInView({ position }: { position: Point | undefined }) {
+  const { getViewport, setCenter } = useReactFlow()
+  const width = useStore((s) => s.width)
+  const height = useStore((s) => s.height)
+
+  useEffect(() => {
+    if (!position || width === 0 || height === 0) return
+    const { x, y, zoom } = getViewport()
+    const left = position.x * zoom + x
+    const top = position.y * zoom + y
+    const visible =
+      left >= 0 &&
+      top >= 0 &&
+      left + NODE_WIDTH * zoom <= width &&
+      top + NODE_HEIGHT * zoom <= height
+    if (!visible) {
+      void setCenter(
+        position.x + NODE_WIDTH / 2,
+        position.y + NODE_HEIGHT / 2,
+        { zoom, duration: 300 },
+      )
+    }
+  }, [position, width, height, getViewport, setCenter])
+
+  return null
 }
 
 function TopicNode({ data, selected }: NodeProps<TopicFlowNode>) {
