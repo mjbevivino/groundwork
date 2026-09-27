@@ -342,3 +342,38 @@ body {
   justify-self: start;
   margin-top: 6px;
 }
+
+/* ---------------------------------------------------------------- files */
+
+.file-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.file-buttons button,
+.notice button {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--lane-bg);
+  color: var(--level-learning);
+}
+
+.notice ul {
+  margin: 0;
+  padding-left: 18px;
+}
