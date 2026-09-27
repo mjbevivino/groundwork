@@ -14,7 +14,11 @@ Groundwork treats a curriculum as a graph. Each topic lists its prerequisites, i
 
 ## What it does
 
-- **Map view:** one lane per layer, prerequisites on the left, arrows to what they unlock. Every level shows as a color plus an icon and text; locked topics are dimmed and dashed.
+![The Path tab: a Continue bar, the Groundwork path scope, and units with progress bars](docs/path.png)
+
+- **Path (the default tab):** a guided route instead of the whole map at once. A Continue bar brings you back to the last topic you opened, or suggests the best next one. Pick a scope (your active project's path or the whole map) to see topics done and hours left, then work through units (one per layer), each with a progress bar. Topics are in study order: prerequisites always first, then map order.
+- **Lessons:** open a topic as a full, readable page with a breadcrumb, why it matters, objectives, resource cards, the strong-when test, evidence and level buttons. Previous and Next (or ← →) walk the study order, and reaching Working offers the next topic.
+- **Map view:** one lane per layer, prerequisites on the left, arrows to what they unlock. Every level shows as a color plus an icon and text; locked topics are dimmed and dashed. Select a topic to highlight everything it needs and everything built on it.
 - **Levels with rules:** Locked → Ready → Learning → Working → Deep. Working needs every objective and at least one piece of evidence. Deep needs evidence that you passed the strong-when test. Already know something? Test out from Ready straight to Working with evidence.
 - **Reviews:** reaching Working schedules a review in 7 days, then 21, then every 60. An overdue review shows a "Needs review" badge. Nothing is ever demoted automatically.
 - **Next up:** the five best things to work on now, each with a one-line reason, ranked by your active project, how much each topic unlocks, layer and estimated hours.
@@ -30,7 +34,7 @@ Requires Node.js 22.12 or newer.
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 96 tests
+npm test           # 118 tests
 npm run lint       # oxlint
 npm run build      # type-check and production build
 ```
@@ -54,7 +58,7 @@ maps/fde.yaml ──▶ map/load.ts ──▶ graph/graph.ts ──▶ progress/
 | `src/map`      | Types that mirror `schema/map.schema.json`, the YAML loader, and validation errors that name the topic by title            |
 | `src/graph`    | Pure graph functions: reference and duplicate checks, topological order with cycle detection, ready set, downstream counts |
 | `src/progress` | Level rules (`rules.ts`), computed levels, the Dexie store, JSON export and import, and the `useProgress` hook             |
-| `src/rank`     | Next up ranking, pure and tested rule by rule                                                                              |
+| `src/rank`     | Next up ranking and the Path's study order, units and scope; pure and tested rule by rule                                  |
 | `src/ui`       | React components: `MapView` (React Flow + dagre), `ListView`, `NodePanel`, and the Next up, Projects and Dashboard views   |
 
 `src/graph` and `src/rank` contain no React, so they're tested as plain functions.
@@ -65,8 +69,8 @@ A map is a YAML file that follows [`schema/map.schema.json`](schema/map.schema.j
 
 ## Results
 
-- **96 tests in 11 files**, all passing in CI: about 2,300 lines of app code and 1,500 lines of tests.
-- Every milestone's acceptance check is a test. For example, with empty progress and the Groundwork project active, Next up is exactly `P1, P3, 4.4, 4.1, 4.7`; with P1 to P5 at Working it's exactly `2.5, 2.3, 1.3, 2.2, 1.5`.
+- **118 tests in 13 files**, all passing in CI: about 3,100 lines of app code and 1,900 lines of tests.
+- Every milestone's acceptance check is a test. For example, with empty progress and the Groundwork project active, Next up is exactly `P1, P3, 4.4, 4.1, 4.7`; with P1 to P5 at Working it's exactly `2.5, 2.3, 1.3, 2.2, 1.5`. With Groundwork active, the Path shows exactly its 10 topics, and a test proves every topic comes after its prerequisites in study order.
 - The main flow (mark a topic Working with evidence, see its dependents unlock, reload, and still see it) was checked in a real browser as well as in tests, and a test runs the same flow from the keyboard alone.
 - Built as v1 in about one weekend with Claude Code, one milestone at a time.
 
