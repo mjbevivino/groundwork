@@ -91,3 +91,7 @@ Groundwork was built with [Claude Code](https://claude.com/claude-code). Claude 
 ## Privacy
 
 Real progress lives only in your browser. The repo contains only `progress.example.json`, and `.gitignore` blocks other `progress*.json` files, which is also the name the Export button uses.
+
+## License
+
+The code is released under the [MIT License](LICENSE), copyright mjbevivino. The seed map, `maps/fde.yaml`, carries its own license, CC-BY-4.0, set in the file's `license` field.
