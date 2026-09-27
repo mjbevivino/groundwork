@@ -17,6 +17,8 @@ concurrency:
 
 jobs:
   build:
+    # Pages needs a public repo on a free plan; private copies skip the deploy.
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
