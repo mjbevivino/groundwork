@@ -155,6 +155,14 @@ export function allPrerequisites(map: GroundworkMap, ids: Id[]): Set<Id> {
   return reachable(buildIndex(map).requiresOf, ids)
 }
 
+/**
+ * Every node that requires at least one of `ids`, directly or indirectly.
+ * An id from `ids` is included only if another one of them requires it.
+ */
+export function allDependents(map: GroundworkMap, ids: Id[]): Set<Id> {
+  return reachable(buildIndex(map).dependentsOf, ids)
+}
+
 // ---------------------------------------------------------------- helpers
 
 /** `requires` links indexed both ways, keeping only ids that exist in the map. */

@@ -3,6 +3,7 @@ import fdeMapSource from '../../maps/fde.yaml?raw'
 import { loadMap } from '../map/load'
 import type { GroundworkMap, Id, MapNode, Project } from '../map/types'
 import {
+  allDependents,
   allPrerequisites,
   checkReferences,
   downstreamCounts,
@@ -297,5 +298,14 @@ describe('allPrerequisites', () => {
   it('is empty for nodes without requires, and ignores related links', () => {
     const map = makeMap([node('A'), node('B', [], ['A'])])
     expect(allPrerequisites(map, ['A', 'B'])).toEqual(new Set())
+  })
+})
+
+describe('allDependents', () => {
+  it('follows requires backwards at any depth, ignoring related links', () => {
+    expect(allDependents(chain, ['A'])).toEqual(new Set(['B', 'C']))
+    expect(allDependents(diamond, ['B'])).toEqual(new Set(['D']))
+    const map = makeMap([node('A'), node('B', [], ['A'])])
+    expect(allDependents(map, ['A'])).toEqual(new Set())
   })
 })

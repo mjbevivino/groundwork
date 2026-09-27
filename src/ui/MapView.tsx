@@ -13,13 +13,14 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useEffect, useMemo } from 'react'
+import { allDependents, allPrerequisites } from '../graph/graph'
 import type { GroundworkMap, Id, MapNode } from '../map/types'
 import type { Level } from '../progress/levels'
 import { layoutMap, NODE_HEIGHT, NODE_WIDTH, type Point } from './layout'
 import { levelStyle } from './levelStyle'
 
 type TopicFlowNode = Node<
-  { node: MapNode; level: Level; needsReview: boolean },
+  { node: MapNode; level: Level; needsReview: boolean; dimmed: boolean },
   'topic'
 >
 type LaneFlowNode = Node<{ title: string }, 'lane'>
@@ -41,6 +42,20 @@ export function MapView({
   onSelect,
 }: MapViewProps) {
   const layout = useMemo(() => layoutMap(map), [map])
+
+  // With a topic selected, keep it, its prerequisites and its dependents
+  // (at any depth) bright, and dim the rest.
+  const related = useMemo(
+    () =>
+      selectedId
+        ? new Set([
+            selectedId,
+            ...allPrerequisites(map, [selectedId]),
+            ...allDependents(map, [selectedId]),
+          ])
+        : null,
+    [map, selectedId],
+  )
 
   const nodes = useMemo(() => {
     const lanes: LaneFlowNode[] = layout.lanes.map((lane) => ({
@@ -64,13 +79,18 @@ export function MapView({
         position: layout.positions.get(node.id)!,
         width: NODE_WIDTH,
         height: NODE_HEIGHT,
-        data: { node, level, needsReview: review },
+        data: {
+          node,
+          level,
+          needsReview: review,
+          dimmed: related !== null && !related.has(node.id),
+        },
         selected: node.id === selectedId,
         ariaLabel: `${node.id} ${node.title}, ${levelStyle[level].label}${review ? ', needs review' : ''}`,
       }
     })
     return [...lanes, ...topics]
-  }, [map, levels, needsReview, layout, selectedId])
+  }, [map, levels, needsReview, layout, selectedId, related])
 
   const edges = useMemo<Edge[]>(
     () =>
@@ -80,9 +100,14 @@ export function MapView({
           source: req,
           target: node.id,
           markerEnd: { type: MarkerType.ArrowClosed },
+          className: !related
+            ? undefined
+            : related.has(req) && related.has(node.id)
+              ? 'is-related'
+              : 'is-dimmed',
         })),
       ),
-    [map],
+    [map, related],
   )
 
   return (
@@ -143,10 +168,12 @@ function KeepInView({ position }: { position: Point | undefined }) {
 }
 
 function TopicNode({ data, selected }: NodeProps<TopicFlowNode>) {
-  const { node, level, needsReview } = data
+  const { node, level, needsReview, dimmed } = data
   const style = levelStyle[level]
   return (
-    <div className={`topic level-${level}${selected ? ' is-selected' : ''}`}>
+    <div
+      className={`topic level-${level}${selected ? ' is-selected' : ''}${dimmed ? ' is-dimmed' : ''}`}
+    >
       <Handle type="target" position={Position.Left} isConnectable={false} />
       <div className="topic-meta">
         <span className="topic-id">

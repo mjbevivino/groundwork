@@ -56,6 +56,21 @@ describe('App: map and panel', () => {
     expect(screen.queryByRole('complementary')).not.toBeInTheDocument()
   })
 
+  it("highlights a selected topic's prerequisites and dependents and dims the rest", async () => {
+    const { container } = await renderApp()
+    const topic = (id: string) =>
+      container.querySelector(`[data-id="${id}"] .topic`)!
+    expect(container.querySelectorAll('.topic.is-dimmed')).toHaveLength(0)
+
+    openNode('Programming basics') // P2: requires P1; 1.1, 2.1 and more build on it
+    for (const id of ['P2', 'P1', '1.1', '2.1', '3.2']) {
+      expect(topic(id)).not.toHaveClass('is-dimmed')
+    }
+    for (const id of ['P3', 'P6', '4.1']) {
+      expect(topic(id)).toHaveClass('is-dimmed')
+    }
+  })
+
   it('closes the panel with Escape', async () => {
     const user = userEvent.setup()
     await renderApp()

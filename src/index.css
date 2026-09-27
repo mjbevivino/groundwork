@@ -530,12 +530,8 @@ body {
 }
 
 .node-panel h2:focus {
+  /* Focus lands here so the panel is announced; a heading needs no ring. */
   outline: none;
-}
-
-.node-panel h2:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
 }
 
 .list-view h3 {
@@ -887,4 +883,19 @@ body {
   .unit-topics {
     padding-left: 16px;
   }
+}
+
+/* Selecting a topic on the map: its prerequisites and dependents stay
+   bright; everything else steps back. */
+.topic.is-dimmed {
+  opacity: 0.25;
+}
+
+.react-flow__edge.is-dimmed {
+  opacity: 0.12;
+}
+
+.react-flow__edge.is-related .react-flow__edge-path {
+  stroke: var(--focus);
+  stroke-width: 2;
 }
