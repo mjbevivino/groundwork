@@ -9,11 +9,15 @@ import { loadMap } from './map/load'
 import type { GroundworkMap, Id } from './map/types'
 import { computeLevels } from './progress/levels'
 import { isoDate, isReviewDue, levelsOf } from './progress/rules'
-import type { NodeProgress, Progress } from './progress/types'
+import type { Progress } from './progress/types'
 import { useProgress } from './progress/useProgress'
+import { nextUp } from './rank/nextUp'
+import { DashboardView } from './ui/DashboardView'
 import { MapView } from './ui/MapView'
+import { NextUpView } from './ui/NextUpView'
 import { NodePanel } from './ui/NodePanel'
 import { ProgressFileButtons } from './ui/ProgressFileButtons'
+import { ProjectsView } from './ui/ProjectsView'
 
 /** Everything that stops a map from being shown, as readable messages. */
 function mapProblems(map: GroundworkMap): string[] {
@@ -58,9 +62,19 @@ function App() {
   )
 }
 
+type View = 'map' | 'next' | 'projects' | 'dashboard'
+
+const VIEWS: { id: View; label: string }[] = [
+  { id: 'map', label: 'Map' },
+  { id: 'next', label: 'Next up' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'dashboard', label: 'Dashboard' },
+]
+
 function Workspace({ map }: { map: GroundworkMap }) {
   const { progress, update, error } = useProgress(map)
   const [importErrors, setImportErrors] = useState<string[]>([])
+  const [view, setView] = useState<View>('map')
   const today = isoDate(new Date())
   const notices = [...(error ? [error] : []), ...importErrors]
 
@@ -69,6 +83,18 @@ function Workspace({ map }: { map: GroundworkMap }) {
       <header className="app-header">
         <h1>Groundwork</h1>
         <p>{map.title}</p>
+        <nav className="views" aria-label="Views">
+          {VIEWS.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              aria-current={view === v.id ? 'page' : undefined}
+              onClick={() => setView(v.id)}
+            >
+              {v.label}
+            </button>
+          ))}
+        </nav>
         {progress && (
           <ProgressFileButtons
             map={map}
@@ -97,16 +123,13 @@ function Workspace({ map }: { map: GroundworkMap }) {
         </section>
       )}
       {progress ? (
-        <MapScreen
+        <Workbench
           map={map}
+          view={view}
+          onView={setView}
           progress={progress}
           today={today}
-          onChange={(id, next) =>
-            update((prev) => ({
-              ...prev,
-              nodes: { ...prev.nodes, [id]: next },
-            }))
-          }
+          update={update}
         />
       ) : (
         <p className="problems status">Loading your progress…</p>
@@ -115,22 +138,30 @@ function Workspace({ map }: { map: GroundworkMap }) {
   )
 }
 
-interface MapScreenProps {
+interface WorkbenchProps {
   map: GroundworkMap
+  view: View
+  onView: (view: View) => void
   progress: Progress
   today: string
-  onChange: (id: Id, next: NodeProgress) => void
+  update: (change: (prev: Progress) => Progress) => void
 }
 
-function MapScreen({ map, progress, today, onChange }: MapScreenProps) {
+/** The current view, with the node panel beside it when a node is selected. */
+function Workbench({
+  map,
+  view,
+  onView,
+  progress,
+  today,
+  update,
+}: WorkbenchProps) {
   const [selectedId, setSelectedId] = useState<Id | null>(null)
   const close = useCallback(() => setSelectedId(null), [])
 
   // Locked and ready are recomputed from the map every time progress changes.
-  const levels = useMemo(
-    () => computeLevels(map, levelsOf(progress.nodes)),
-    [map, progress.nodes],
-  )
+  const stored = useMemo(() => levelsOf(progress.nodes), [progress.nodes])
+  const levels = useMemo(() => computeLevels(map, stored), [map, stored])
   const needsReview = useMemo(
     () =>
       new Set(
@@ -140,17 +171,54 @@ function MapScreen({ map, progress, today, onChange }: MapScreenProps) {
       ),
     [progress.nodes, today],
   )
+  const suggestions = useMemo(
+    () => nextUp(map, stored, progress.active_project),
+    [map, stored, progress.active_project],
+  )
   const selected = map.nodes.find((n) => n.id === selectedId)
 
   return (
     <div className="app-body">
-      <MapView
-        map={map}
-        levels={levels}
-        needsReview={needsReview}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-      />
+      {view === 'map' && (
+        <MapView
+          map={map}
+          levels={levels}
+          needsReview={needsReview}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+        />
+      )}
+      {view === 'next' && (
+        <NextUpView
+          map={map}
+          suggestions={suggestions}
+          levels={levels}
+          activeProject={progress.active_project}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          onPickProject={() => onView('projects')}
+        />
+      )}
+      {view === 'projects' && (
+        <ProjectsView
+          map={map}
+          levels={levels}
+          activeProject={progress.active_project}
+          selectedId={selectedId}
+          onActivate={(id) =>
+            update((prev) => ({ ...prev, active_project: id }))
+          }
+          onSelect={setSelectedId}
+        />
+      )}
+      {view === 'dashboard' && (
+        <DashboardView
+          map={map}
+          levels={levels}
+          needsReview={needsReview}
+          onSelect={setSelectedId}
+        />
+      )}
       {selected && (
         <NodePanel
           key={selected.id}
@@ -159,7 +227,12 @@ function MapScreen({ map, progress, today, onChange }: MapScreenProps) {
           levels={levels}
           progress={progress.nodes[selected.id]}
           today={today}
-          onChange={(next) => onChange(selected.id, next)}
+          onChange={(next) =>
+            update((prev) => ({
+              ...prev,
+              nodes: { ...prev.nodes, [selected.id]: next },
+            }))
+          }
           onClose={close}
         />
       )}

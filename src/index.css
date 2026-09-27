@@ -377,3 +377,154 @@ body {
   margin: 0;
   padding-left: 18px;
 }
+
+/* ---------------------------------------------------------------- views */
+
+.views {
+  display: flex;
+  gap: 4px;
+}
+
+.views button {
+  padding: 3px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.views button[aria-current='page'] {
+  border-color: var(--border);
+  background: var(--lane-bg);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.view {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.view h2 {
+  margin-top: 0;
+}
+
+.next-up,
+.node-list {
+  display: grid;
+  gap: 8px;
+  padding-left: 24px;
+}
+
+.next-up li,
+.node-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.reason {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.node-button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--level, var(--level-locked));
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.node-button.level-locked {
+  opacity: 1;
+  border-style: solid;
+}
+
+.node-button[aria-pressed='true'] {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.node-button-id {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.node-button-title {
+  font-weight: 600;
+}
+
+.node-button .badge {
+  font-size: 12px;
+}
+
+.link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--focus);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.projects {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.project-option {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.project-description {
+  display: block;
+}
+
+.overall {
+  font-size: 18px;
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.dashboard-grid caption {
+  white-space: nowrap;
+  text-align: left;
+  font-weight: 700;
+  padding-bottom: 4px;
+}
+
+.dashboard-grid th {
+  padding: 2px 24px 2px 0;
+  text-align: left;
+  font-weight: 400;
+}
+
+.dashboard-grid td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
