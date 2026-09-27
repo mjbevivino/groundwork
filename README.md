@@ -1,20 +1,85 @@
 # Groundwork
 
-Your curriculum as an interactive map of topics, prerequisites and proof. Groundwork shows what you're ready to learn next, and it asks for evidence before you mark something as mastered.
+Your curriculum as an interactive map of topics, prerequisites and proof. Groundwork shows what you're ready to learn next, and it won't let you mark a topic as learned until you've shown evidence.
 
-**Status:** v1 (local, single user) in progress. See [GETTING_STARTED.md](GETTING_STARTED.md).
+**Live demo:** https://mjbevivino.github.io/groundwork/ (runs entirely in your browser; your progress never leaves it)
+
+![The map: five lanes of topics, two at Working, one in Learning with its panel open](docs/screenshot.png)
+
+## The problem
+
+Long self-study plans fail in two quiet ways. You can't see what you're ready for, so you either stall or skip ahead into material that assumes things you never learned. And "done" drifts: a topic you skimmed feels the same as one you can actually use.
+
+Groundwork treats a curriculum as a graph. Each topic lists its prerequisites, its objectives, and a "strong when" test that says what mastery looks like. A topic unlocks only when its prerequisites are solid, and it moves to Working only with every objective checked and a piece of evidence attached.
+
+## What it does
+
+- **Map view:** one lane per layer, prerequisites on the left, arrows to what they unlock. Every level shows as a color plus an icon and text; locked topics are dimmed and dashed.
+- **Levels with rules:** Locked → Ready → Learning → Working → Deep. Working needs every objective and at least one piece of evidence. Deep needs evidence that you passed the strong-when test. Already know something? Test out from Ready straight to Working with evidence.
+- **Reviews:** reaching Working schedules a review in 7 days, then 21, then every 60. An overdue review shows a "Needs review" badge. Nothing is ever demoted automatically.
+- **Next up:** the five best things to work on now, each with a one-line reason, ranked by your active project, how much each topic unlocks, layer and estimated hours.
+- **Projects:** pick an active project and see every topic on its path, in prerequisite order.
+- **Dashboard:** counts by level and by layer, estimated hours done, and reviews due.
+- **List view:** everything the map does, as a keyboard-friendly list (arrow keys, Home, End, Enter, Escape).
+- **Your data stays yours:** progress is saved in your browser (IndexedDB). Export it as JSON, and import it on another device.
 
 ## Run it
 
+Requires Node.js 22.12 or newer.
+
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:5173
+npm test           # 96 tests
+npm run lint       # oxlint
+npm run build      # type-check and production build
 ```
 
-## What's inside
+## How it works
 
-- `maps/fde.yaml`: the seed map, a Forward Deployed Engineer curriculum with 46 topics in 5 layers
-- `schema/map.schema.json`: the open map format (JSON Schema 2020-12)
-- `CLAUDE.md`: build instructions for Claude Code
+```
+maps/fde.yaml ──▶ map/load.ts ──▶ graph/graph.ts ──▶ progress/levels.ts ──▶ ui/*
+  (YAML)          parse + Ajv      references,        locked / ready        map, list,
+                  validation       cycles, order,     from stored           panel, views
+                                   ready set,         progress
+                                   reachability            ▲
+                                                           │
+                              progress/rules.ts ───────────┤  every level change
+                              progress/store.ts (Dexie) ───┘  saved to IndexedDB
+                              rank/nextUp.ts  ◀── graph functions, active project
+```
 
-This README gets its full version (the problem, a demo, architecture, results, decisions) in M7.
+| Folder         | What it holds                                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `src/map`      | Types that mirror `schema/map.schema.json`, the YAML loader, and validation errors that name the topic by title            |
+| `src/graph`    | Pure graph functions: reference and duplicate checks, topological order with cycle detection, ready set, downstream counts |
+| `src/progress` | Level rules (`rules.ts`), computed levels, the Dexie store, JSON export and import, and the `useProgress` hook             |
+| `src/rank`     | Next up ranking, pure and tested rule by rule                                                                              |
+| `src/ui`       | React components: `MapView` (React Flow + dagre), `ListView`, `NodePanel`, and the Next up, Projects and Dashboard views   |
+
+`src/graph` and `src/rank` contain no React, so they're tested as plain functions.
+
+### Bring your own map
+
+A map is a YAML file that follows [`schema/map.schema.json`](schema/map.schema.json) (JSON Schema 2020-12): layers, then nodes with `requires`, `objectives` and `strong_when`, and optional projects. Always quote ids: unquoted `2.10` is the number 2.1 in YAML, and the loader will tell you which topic has the problem.
+
+## Results
+
+- **96 tests in 11 files**, all passing in CI: about 2,300 lines of app code and 1,500 lines of tests.
+- Every milestone's acceptance check is a test. For example, with empty progress and the Groundwork project active, Next up is exactly `P1, P3, 4.4, 4.1, 4.7`; with P1 to P5 at Working it's exactly `2.5, 2.3, 1.3, 2.2, 1.5`.
+- The main flow (mark a topic Working with evidence, see its dependents unlock, reload, and still see it) was checked in a real browser as well as in tests, and a test runs the same flow from the keyboard alone.
+- Built as v1 in about one weekend with Claude Code, one milestone at a time.
+
+## Decisions
+
+- **No backend.** Progress lives in IndexedDB through Dexie. There's no account and nothing to host, and JSON export covers backup and moving devices.
+- **The map is data, not code.** YAML is easy to write by hand; JSON Schema plus Ajv catches mistakes, and the error messages name the topic by title, because a broken id can't be trusted to identify it.
+- **Rules as pure functions.** Each `whyNot…` check returns a reason or `null`. Buttons use the same check to disable themselves and show why, and every transition refuses on the same check, so the UI can't drift from the rules.
+- **Locked and ready are computed, never stored.** Only started levels are saved, so editing the map can never leave stale "ready" flags behind.
+- **Layout:** each topic goes in the first column to the right of all its prerequisites that has room in its lane (at most three per column), and dagre orders topics within a column to reduce crossings. That keeps lanes wide and flat enough to read on a laptop screen.
+- **Next up rule 3 compares layers.** The spec's third tie-breaker is "earlier position in the map file". Comparing node positions would make the fourth rule (fewer hours) unreachable, since positions never tie, so rule 3 compares each topic's layer and the node's own position is the final tie-breaker.
+- **Accessibility:** levels always show as an icon plus text, never color alone, and the list view can do everything the map can.
+
+## Privacy
+
+Real progress lives only in your browser. The repo contains only `progress.example.json`, and `.gitignore` blocks other `progress*.json` files, which is also the name the Export button uses.
