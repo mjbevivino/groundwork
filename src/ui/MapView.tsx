@@ -16,17 +16,28 @@ import type { Level } from '../progress/levels'
 import { layoutMap, NODE_HEIGHT, NODE_WIDTH } from './layout'
 import { levelStyle } from './levelStyle'
 
-type TopicFlowNode = Node<{ node: MapNode; level: Level }, 'topic'>
+type TopicFlowNode = Node<
+  { node: MapNode; level: Level; needsReview: boolean },
+  'topic'
+>
 type LaneFlowNode = Node<{ title: string }, 'lane'>
 
 interface MapViewProps {
   map: GroundworkMap
   levels: Map<Id, Level>
+  /** Nodes whose review is due, shown with a badge. */
+  needsReview: Set<Id>
   selectedId: Id | null
   onSelect: (id: Id) => void
 }
 
-export function MapView({ map, levels, selectedId, onSelect }: MapViewProps) {
+export function MapView({
+  map,
+  levels,
+  needsReview,
+  selectedId,
+  onSelect,
+}: MapViewProps) {
   const layout = useMemo(() => layoutMap(map), [map])
 
   const nodes = useMemo(() => {
@@ -44,19 +55,20 @@ export function MapView({ map, levels, selectedId, onSelect }: MapViewProps) {
     }))
     const topics: TopicFlowNode[] = map.nodes.map((node) => {
       const level = levels.get(node.id) ?? 'locked'
+      const review = needsReview.has(node.id)
       return {
         id: node.id,
         type: 'topic',
         position: layout.positions.get(node.id)!,
         width: NODE_WIDTH,
         height: NODE_HEIGHT,
-        data: { node, level },
+        data: { node, level, needsReview: review },
         selected: node.id === selectedId,
-        ariaLabel: `${node.id} ${node.title}, ${levelStyle[level].label}`,
+        ariaLabel: `${node.id} ${node.title}, ${levelStyle[level].label}${review ? ', needs review' : ''}`,
       }
     })
     return [...lanes, ...topics]
-  }, [map, levels, layout, selectedId])
+  }, [map, levels, needsReview, layout, selectedId])
 
   const edges = useMemo<Edge[]>(
     () =>
@@ -95,13 +107,16 @@ export function MapView({ map, levels, selectedId, onSelect }: MapViewProps) {
 }
 
 function TopicNode({ data, selected }: NodeProps<TopicFlowNode>) {
-  const { node, level } = data
+  const { node, level, needsReview } = data
   const style = levelStyle[level]
   return (
     <div className={`topic level-${level}${selected ? ' is-selected' : ''}`}>
       <Handle type="target" position={Position.Left} isConnectable={false} />
       <div className="topic-meta">
-        <span className="topic-id">{node.id}</span>
+        <span className="topic-id">
+          {node.id}
+          {needsReview && <span className="topic-review"> ↻ Needs review</span>}
+        </span>
         <span className="topic-level">
           <span aria-hidden="true">{style.icon}</span> {style.label}
         </span>

@@ -4,9 +4,9 @@
 // skip a rule by accident.
 
 import type { Levels } from '../graph/graph'
-import type { Id, MapNode } from '../map/types'
+import type { GroundworkMap, Id, MapNode } from '../map/types'
 import type { Level } from './levels'
-import type { Evidence, NodeProgress } from './types'
+import type { Evidence, NodeProgress, Progress } from './types'
 
 /** Days to the next review: after Working, after the first review, then every review after. */
 export const REVIEW_INTERVALS = [7, 21, 60] as const
@@ -172,4 +172,9 @@ function reachWorking(p: NodeProgress, today: string): NodeProgress {
 
 function refuse(reason: string | null): void {
   if (reason !== null) throw new Error(reason)
+}
+
+/** Progress with nothing started, for a map. */
+export function emptyProgress(map: GroundworkMap): Progress {
+  return { map: `${map.id}@${map.version}`, nodes: {} }
 }

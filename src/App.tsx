@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import fdeMapSource from '../maps/fde.yaml?raw'
 import {
   checkReferences,
@@ -8,6 +8,8 @@ import {
 import { loadMap } from './map/load'
 import type { GroundworkMap, Id } from './map/types'
 import { computeLevels } from './progress/levels'
+import { emptyProgress, isoDate, isReviewDue, levelsOf } from './progress/rules'
+import type { NodeProgress, Progress } from './progress/types'
 import { MapView } from './ui/MapView'
 import { NodePanel } from './ui/NodePanel'
 
@@ -59,22 +61,51 @@ function App() {
 }
 
 function MapScreen({ map }: { map: GroundworkMap }) {
-  // Progress arrives in M4/M5; until then every node is ready or locked.
-  const [levels] = useState(() => computeLevels(map, {}))
+  // In memory for now; M5 saves it.
+  const [progress, setProgress] = useState<Progress>(() => emptyProgress(map))
   const [selectedId, setSelectedId] = useState<Id | null>(null)
   const close = useCallback(() => setSelectedId(null), [])
+  const today = isoDate(new Date())
+
+  const levels = useMemo(
+    () => computeLevels(map, levelsOf(progress.nodes)),
+    [map, progress.nodes],
+  )
+  const needsReview = useMemo(
+    () =>
+      new Set(
+        Object.keys(progress.nodes).filter((id) =>
+          isReviewDue(progress.nodes[id], today),
+        ),
+      ),
+    [progress.nodes, today],
+  )
   const selected = map.nodes.find((n) => n.id === selectedId)
+
+  function updateNode(id: Id, next: NodeProgress) {
+    setProgress((prev) => ({ ...prev, nodes: { ...prev.nodes, [id]: next } }))
+  }
 
   return (
     <div className="app-body">
       <MapView
         map={map}
         levels={levels}
+        needsReview={needsReview}
         selectedId={selectedId}
         onSelect={setSelectedId}
       />
       {selected && (
-        <NodePanel map={map} node={selected} levels={levels} onClose={close} />
+        <NodePanel
+          key={selected.id}
+          map={map}
+          node={selected}
+          levels={levels}
+          progress={progress.nodes[selected.id]}
+          today={today}
+          onChange={(next) => updateNode(selected.id, next)}
+          onClose={close}
+        />
       )}
     </div>
   )

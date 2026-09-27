@@ -241,3 +241,104 @@ body {
     border-top: 1px solid var(--border);
   }
 }
+
+/* ---------------------------------------------------------------- progress */
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0 6px;
+  border: 1px solid var(--level, var(--border));
+  border-radius: 999px;
+  color: var(--level, var(--text));
+  font-weight: 600;
+}
+
+.badge.level-locked {
+  opacity: 1;
+}
+
+.badge.review,
+.topic-review {
+  --level: var(--level-learning);
+  margin-left: 6px;
+  color: var(--level-learning);
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.node-panel button,
+.node-panel input,
+.node-panel select {
+  font: inherit;
+  font-size: 14px;
+}
+
+.node-panel button:not(.panel-close) {
+  padding: 4px 12px;
+  border: 1px solid var(--focus);
+  border-radius: 6px;
+  background: var(--focus);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.node-panel button:disabled {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.checklist {
+  list-style: none;
+  padding-left: 0 !important;
+}
+
+.checklist li {
+  margin: 4px 0;
+}
+
+.evidence-form {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.evidence-form label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.evidence-form input,
+.evidence-form select {
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.evidence-form button {
+  justify-self: start;
+  margin-top: 6px;
+}
