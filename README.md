@@ -70,6 +70,10 @@ A map is a YAML file that follows [`schema/map.schema.json`](schema/map.schema.j
 - The main flow (mark a topic Working with evidence, see its dependents unlock, reload, and still see it) was checked in a real browser as well as in tests, and a test runs the same flow from the keyboard alone.
 - Built as v1 in about one weekend with Claude Code, one milestone at a time.
 
+## How it was built
+
+Groundwork was built with [Claude Code](https://claude.com/claude-code). Claude wrote the code and the tests, one milestone at a time, and I set the goals, reviewed each step, and checked the results in the browser. [`CLAUDE.md`](CLAUDE.md) is the brief Claude worked from, [`SESSION_LOG.md`](SESSION_LOG.md) records each session, and the commits are co-authored by Claude.
+
 ## Decisions
 
 - **No backend.** Progress lives in IndexedDB through Dexie. There's no account and nothing to host, and JSON export covers backup and moving devices.
