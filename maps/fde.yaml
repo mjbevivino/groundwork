@@ -1,0 +1,919 @@
+# Groundwork map: Forward Deployed Engineer
+#
+# Content mirrors the FDE Foundations and FDE AI Layer docs. Layer 4 is a first
+# draft of the Field Skills doc. Prerequisite links, depth targets and hour
+# estimates are judgment calls: edit freely.
+#
+# GOTCHA: always quote node ids. In YAML, 2.10 unquoted is the float 2.1,
+# which silently collides with node "2.1". (See pillar 1.1.)
+#
+# tags: "curriculum:*" = the matching area in the three-year curriculum doc
+#       (approximate crosswalk), "day-job" = practiced at work.
+
+schema: groundwork/map@1
+id: fde
+title: Forward Deployed Engineer
+version: 0.1.0
+description: >-
+  The skills a forward deployed engineer builds on, from prerequisites through
+  foundations, the builder core, the AI layer and field skills.
+license: CC-BY-4.0
+authors: ["mjbevivino"]
+
+layers:
+  - id: P
+    title: Prerequisites
+  - id: L1
+    title: Foundations
+  - id: L2
+    title: Builder core
+  - id: L3
+    title: AI layer
+  - id: L4
+    title: Field skills
+
+nodes:
+  # ---------------------------------------------------------------- Prerequisites
+  - id: "P1"
+    title: Computer fluency
+    layer: P
+    depth: working
+    why: Everything later assumes you can move around a computer without friction.
+    objectives:
+      - Navigate the folder tree with absolute and relative paths
+      - Explain what file extensions and hidden files signal
+      - Install, update and remove software, including with a package manager
+      - Tell cloud-synced files from local ones
+    strong_when: You can find any file by its full path, and install and remove a tool without a guide.
+    resources:
+      - {title: "A week of opening files by typing their path", kind: practice}
+    est_hours: 10
+
+  - id: "P2"
+    title: Programming basics
+    layer: P
+    depth: working
+    why: Layer 1 is learned by writing code, so this is the one hard gate.
+    objectives:
+      - Use numbers, strings and booleans, and convert between them
+      - Write if/else logic and for and while loops
+      - Split a script into functions with parameters and return values
+      - Work with lists and dictionaries
+      - Read and write text and CSV files
+      - Import a library and install a package with pip
+      - Read a traceback and debug with print statements
+    strong_when: You can write a 50-line script that reads a CSV, filters and summarizes it, and writes the result, without copying code.
+    requires: ["P1"]
+    related: ["P6"]
+    resources:
+      - {title: "Automate the Boring Stuff with Python", url: "https://automatetheboringstuff.com", kind: book, free: true}
+      - {title: "Harvard CS50P", url: "https://cs50.harvard.edu/python/", kind: course, free: true}
+    est_hours: 60
+
+  - id: "P3"
+    title: Algebra-level math
+    layer: P
+    depth: working
+    why: Big-O, logarithms and the statistics in the AI layer all sit on this.
+    objectives:
+      - Compute percent change, ratios, rates and weighted averages
+      - Solve equations and respect order of operations
+      - Read linear, quadratic and exponential growth off a graph
+      - Explain log2(n) as how many times you can halve n
+      - Read summation and basic set notation
+      - Compute mean, median and spread
+    strong_when: You can explain why doubling the data makes an O(n^2) job four times slower, and compute a weighted average by hand.
+    resources:
+      - {title: "Khan Academy Algebra 1, plus the exponents and logarithms units of Algebra 2", url: "https://www.khanacademy.org/math", kind: course, free: true}
+    est_hours: 30
+
+  - id: "P4"
+    title: Working with tables
+    layer: P
+    depth: working
+    why: SQL, pandas and data modeling all generalize this one mental model.
+    objectives:
+      - Treat rows as records and columns as typed attributes
+      - Sort, filter, group and aggregate, including with pivot tables
+      - Match two tables on a key, and see that a lookup is a join
+      - Spot duplicates, blanks, inconsistent spellings and numbers stored as text
+      - Choose a basic chart that answers the question
+    strong_when: You can join two tables on a key and produce a total by category by month.
+    requires: ["P1"]
+    resources:
+      - {title: "A city open-data portal dataset, worked in a spreadsheet", kind: practice}
+    est_hours: 15
+
+  - id: "P5"
+    title: Your workbench
+    layer: P
+    depth: working
+    why: You set it up once and use it every day after.
+    objectives:
+      - Set up VS Code with the Python extension
+      - Open a terminal, use pwd, ls and cd, run a command and stop it with Ctrl+C
+      - Install Python and create a virtual environment per project
+      - Install and configure git, make a commit, create a GitHub repo and push
+    strong_when: You can create a project folder, run a Python file from the terminal and push it to GitHub.
+    requires: ["P1"]
+    resources:
+      - {title: "The Missing Semester, lecture 1", url: "https://missing.csail.mit.edu", kind: course, free: true}
+      - {title: "VS Code Python tutorial", url: "https://code.visualstudio.com/docs/python/python-tutorial", kind: docs, free: true}
+      - {title: "GitHub Hello World", url: "https://docs.github.com/en/get-started/start-your-journey/hello-world", kind: docs, free: true}
+    est_hours: 8
+
+  - id: "P6"
+    title: Getting unstuck
+    layer: P
+    depth: working
+    why: Your speed in every later layer depends on how fast you recover from being stuck.
+    objectives:
+      - Read the whole error message, starting from the last line in Python
+      - Search with the exact error text plus the tool and version
+      - Read docs in order, quickstart then tutorial then reference
+      - Ask with what you tried, what you expected, what happened and a minimal example
+      - Use AI assistants as a tutor, writing first and never keeping code you can't explain
+      - Time-box being stuck, then ask
+    strong_when: You can get past an unfamiliar error on your own within about 30 minutes.
+    resources:
+      - {title: "How to ask good questions (Julia Evans)", url: "https://jvns.ca/blog/good-questions/", kind: article, free: true}
+      - {title: "How to create a minimal reproducible example (Stack Overflow)", url: "https://stackoverflow.com/help/minimal-reproducible-example", kind: article, free: true}
+    est_hours: 10
+
+  - id: "P7"
+    title: A learning system
+    layer: P
+    depth: working
+    why: This map is hundreds of hours of material, and a system keeps it from leaking away.
+    objectives:
+      - Use each pillar's strong-when test as the unit of progress
+      - Keep one searchable notes system, written in your own words
+      - Review vocabulary, commands and concepts with spaced flashcards
+      - Commit your work to GitHub as a public trail
+      - Log one dated line per session on what you learned and what's stuck
+    strong_when: Notes, a learning log and a review habit have run for two weeks without a gap.
+    resources:
+      - {title: "Make It Stick (Brown, Roediger and McDaniel)", kind: book}
+      - {title: "Anki", url: "https://apps.ankiweb.net", kind: tool, free: true}
+    est_hours: 6
+
+  # ---------------------------------------------------------------- Layer 1: Foundations
+  - id: "1.1"
+    title: How data is represented
+    layer: L1
+    depth: working
+    why: Many pipeline bugs are representation bugs, like a garbled character, a rounding error or a timestamp five hours off.
+    objectives:
+      - Explain binary, hex, bytes, integer sizes and overflow
+      - Explain why 0.1 + 0.2 != 0.3, and use decimal types for money
+      - Diagnose ASCII vs Unicode, UTF-8, Windows-1252 and byte-order-mark problems
+      - Handle Unix timestamps, UTC vs local time, time zones, daylight saving and ISO 8601
+      - Compare CSV, JSON, XML and Parquet, and row vs columnar storage
+    strong_when: A customer's file won't load cleanly and you can name the cause within minutes, whether encoding, delimiter, number format or time zone.
+    requires: ["P2"]
+    resources:
+      - {title: "Code (Petzold)", kind: book}
+      - {title: "The Absolute Minimum Every Software Developer Must Know About Unicode (Spolsky)", kind: article, free: true}
+      - {title: "Python docs on floating point", url: "https://docs.python.org/3/tutorial/floatingpoint.html", kind: docs, free: true}
+    est_hours: 15
+
+  - id: "1.2"
+    title: How computers run programs
+    layer: L1
+    depth: working
+    why: When a job is slow, hangs or runs out of memory on a machine you don't control, this is how you diagnose it.
+    objectives:
+      - Explain the memory hierarchy and why data locality matters
+      - Describe processes, threads, scheduling, virtual memory and permissions
+      - Explain compiled vs interpreted languages, runtimes and dependency problems
+      - Tell concurrency from parallelism, and spot race conditions and deadlocks
+      - Classify work as CPU-bound or I/O-bound, and pick processes, threads or async
+    strong_when: You can tell whether a slow job is limited by CPU, memory or I/O, and pick the fix.
+    requires: ["P2"]
+    related: ["1.7"]
+    resources:
+      - {title: "Operating Systems: Three Easy Pieces", url: "https://pages.cs.wisc.edu/~remzi/OSTEP/", kind: book, free: true}
+    est_hours: 30
+
+  - id: "1.3"
+    title: Data structures and algorithms
+    layer: L1
+    depth: deep
+    why: It's the hiring gate, and it decides whether a job takes 2 seconds or 2 hours.
+    objectives:
+      - Choose among arrays, hash maps, sets, stacks, queues, heaps, trees and graphs
+      - Implement sorting, binary search, recursion, BFS, DFS and topological sort
+      - Analyze time and space with Big-O
+      - Recognize two-pointer, sliding-window, interval and top-K heap patterns
+    strong_when: You solve LeetCode medium problems in about 30 minutes while explaining your reasoning out loud.
+    requires: ["P2", "P3"]
+    resources:
+      - {title: "Grokking Algorithms", kind: book}
+      - {title: "NeetCode 150", url: "https://neetcode.io", kind: practice, free: true}
+    est_hours: 100
+
+  - id: "1.4"
+    title: Logic and math for computing
+    layer: L1
+    depth: working
+    why: SQL is set theory, filters are Boolean logic and AI evaluation is statistics.
+    objectives:
+      - Rewrite conditions with Boolean algebra and De Morgan's laws
+      - Explain joins as set operations and predict NULL behavior (three-valued logic)
+      - Reason about graphs, cycles, and logarithmic vs quadratic growth
+      - Explain distributions, sampling and confidence at a basic level
+    strong_when: You can predict what NULLs will do to a query before you run it.
+    requires: ["P3"]
+    resources:
+      - {title: "Mathematics for Computer Science (MIT), logic, sets and graphs chapters", kind: book, free: true}
+    est_hours: 25
+
+  - id: "1.5"
+    title: Networking
+    layer: L1
+    depth: deep
+    why: Every integration crosses a network, and enterprise networks are locked down on purpose.
+    objectives:
+      - Explain the layered model from IP through TCP, TLS and HTTP
+      - Work with IP addresses, subnets and CIDR, private ranges, NAT and ports
+      - Trace DNS resolution, record types, and internal vs public DNS
+      - Explain TLS certificates, and why traffic-inspecting proxies break them
+      - Describe proxies, load balancers, firewalls, allowlists and VPNs
+      - Debug with ping, traceroute, dig, curl -v, openssl s_client and ss
+    strong_when: For connection refused, timed out, certificate verify failed or 403, you know which layer each points to and how to prove it.
+    requires: ["P1"]
+    related: ["1.7"]
+    resources:
+      - {title: "Julia Evans networking zines", url: "https://wizardzines.com", kind: book}
+      - {title: "Computer Networking: A Top-Down Approach (Kurose and Ross), chapters 1-3", kind: book}
+    est_hours: 40
+
+  - id: "1.6"
+    title: The web and APIs (as a consumer)
+    layer: L1
+    depth: deep
+    why: Connecting to the customer's systems takes up the first weeks of most engagements.
+    objectives:
+      - Use HTTP methods, status codes, headers, cookies and streaming responses
+      - Handle REST pagination, filtering, rate limits and retries with exponential backoff
+      - Authenticate with API keys, OAuth 2.0 (client credentials and authorization code), JWTs and SSO
+      - Recognize webhooks, GraphQL, gRPC and SOAP/XML
+      - Read an OpenAPI spec, and choose between an SDK and raw HTTP
+    strong_when: You can connect to an unfamiliar authenticated API within a day, handling auth, pagination, rate limits, retries and errors.
+    requires: ["1.5", "P2"]
+    resources:
+      - {title: "OAuth 2.0 Simplified (Parecki)", url: "https://www.oauth.com", kind: book, free: true}
+      - {title: "GitHub REST API", url: "https://docs.github.com/en/rest", kind: practice, free: true}
+    est_hours: 30
+
+  - id: "1.7"
+    title: Linux, the shell and your dev environment
+    layer: L1
+    depth: deep
+    why: Customer servers have no graphical interface, and your terminal speed sets your pace on everything else.
+    objectives:
+      - Navigate the filesystem and manage users, groups and permissions
+      - Use pipes, redirection, grep, sed, awk, find, xargs and regular expressions
+      - Manage processes, signals, systemd services, cron and logs
+      - Work remotely with SSH keys, SSH tunnels, rsync and tmux
+      - Edit a config file on a server with vim
+    strong_when: You can log in to a server, find out why a service died, fix it and make it restart automatically, all from the terminal.
+    requires: ["P5"]
+    resources:
+      - {title: "The Missing Semester", url: "https://missing.csail.mit.edu", kind: course, free: true}
+      - {title: "The Linux Command Line (Shotts)", url: "https://linuxcommand.org/tlcl.php", kind: book, free: true}
+    est_hours: 30
+    tags: ["curriculum:M1"]
+
+  # ---------------------------------------------------------------- Layer 2: Builder core
+  - id: "2.1"
+    title: Python, in depth
+    layer: L2
+    depth: deep
+    why: It's the main language of data and AI work, and FDE postings from Palantir, OpenAI and Anthropic all name it.
+    objectives:
+      - Explain references, mutability, scope and closures
+      - Use comprehensions, generators, classes, dataclasses, decorators and context managers
+      - Write robust code with custom exceptions, type hints (mypy) and Pydantic
+      - Package a project with pyproject.toml, uv and a lockfile
+      - Use pathlib, json, csv, datetime, logging, re, subprocess and collections
+      - Profile code, and choose async, threads, processes or vectorization
+    strong_when: You can turn a rough script into a typed, tested, packaged module, and read any traceback without guessing.
+    requires: ["P2", "P5"]
+    related: ["1.2"]
+    resources:
+      - {title: "Fluent Python (Ramalho)", kind: book}
+    est_hours: 80
+    tags: ["curriculum:M1"]
+
+  - id: "2.2"
+    title: TypeScript/JavaScript
+    layer: L2
+    depth: working
+    why: Front ends, Node back ends, and many AI SDKs and MCP servers ship TypeScript first.
+    objectives:
+      - Explain the event loop, promises and async/await
+      - Use types, interfaces, generics and type narrowing
+      - Manage a project with npm and package.json, and call APIs with fetch
+    strong_when: You can build a small TypeScript API and a simple React page that calls it.
+    requires: ["P2"]
+    related: ["1.6"]
+    resources:
+      - {title: "TypeScript Handbook", url: "https://www.typescriptlang.org/docs/handbook/", kind: docs, free: true}
+    est_hours: 40
+
+  - id: "2.3"
+    title: Software engineering practice
+    layer: L2
+    depth: deep
+    why: It turns code into something a customer can run after you leave.
+    objectives:
+      - Use branches, pull requests, rebase, conflict resolution and bisect
+      - Write unit, integration and pipeline tests, with fixtures and mocks at boundaries
+      - Gate every change with linting, formatting, type checks and CI
+      - Keep I/O at the edges and logic pure, behind clear interfaces
+      - Load config from the environment and log in a structured way
+      - Debug methodically by reproducing, isolating, hypothesizing and verifying
+      - Find your way around a large unfamiliar codebase quickly
+      - Write READMEs, decision records and runbooks, and give useful code review
+    strong_when: A stranger can clone your repo, run one command, see every test pass and understand the project from the README.
+    requires: ["P2", "P5"]
+    related: ["2.1", "1.7"]
+    resources:
+      - {title: "The Pragmatic Programmer", kind: book}
+      - {title: "A Philosophy of Software Design (Ousterhout)", kind: book}
+    est_hours: 60
+    tags: ["curriculum:M1"]
+
+  - id: "2.4"
+    title: Building services and APIs (back end)
+    layer: L2
+    depth: working
+    why: Most FDE deliverables are services that other systems or a UI call.
+    objectives:
+      - Build routes with request validation using FastAPI and Pydantic
+      - Design APIs with versioning, pagination, error formats and idempotency keys
+      - Verify tokens, plug into single sign-on and check roles
+      - Run background jobs, scheduled jobs and verified webhooks
+      - Add rate limiting, caching and timeouts
+    strong_when: You can ship a small authenticated API with a background job, deployed and documented.
+    requires: ["2.1", "1.6"]
+    resources:
+      - {title: "FastAPI tutorial", url: "https://fastapi.tiangolo.com/tutorial/", kind: docs, free: true}
+    est_hours: 30
+    tags: ["curriculum:W1"]
+
+  - id: "2.5"
+    title: Databases and SQL
+    layer: L2
+    depth: deep
+    why: The customer's truth lives in databases, and slow or wrong queries are the most common data complaint.
+    objectives:
+      - Design tables with primary keys, foreign keys and constraints
+      - Write every join type, window functions, CTEs and subqueries, and handle NULLs correctly
+      - Explain ACID transactions, isolation levels and locking
+      - Read an EXPLAIN plan and fix a slow query with an index or a rewrite
+      - Tell OLTP from OLAP, and know when document, key-value or vector stores fit
+      - Run schema migrations, and choose between an ORM and raw SQL
+    strong_when: You can take a slow query, read its plan and fix it with an index or a rewrite.
+    requires: ["P2", "P4"]
+    related: ["1.4"]
+    resources:
+      - {title: "Use The Index, Luke", url: "https://use-the-index-luke.com", kind: book, free: true}
+      - {title: "PostgreSQL Exercises", url: "https://pgexercises.com", kind: practice, free: true}
+    est_hours: 60
+    tags: ["curriculum:M2"]
+
+  - id: "2.6"
+    title: Data modeling
+    layer: L2
+    depth: deep
+    why: The model decides whether the business, the dashboards and the AI all agree on what's true.
+    objectives:
+      - Declare the grain of every fact table and choose fact types
+      - Build conformed dimensions and slowly changing dimensions (types 1 and 2)
+      - Normalize to 3NF, and know when to denormalize
+      - Model entities, relationships and actions in a semantic or metrics layer
+      - Resolve the same entity across systems (master data)
+      - Write a data dictionary and fixed metric definitions an AI can use
+    strong_when: Given a messy business process, you can draw the model, state the grain of every table and defend it to a skeptic.
+    requires: ["2.5"]
+    resources:
+      - {title: "The Data Warehouse Toolkit (Kimball), chapters 1-4", kind: book}
+    est_hours: 50
+    tags: ["curriculum:M2"]
+
+  - id: "2.7"
+    title: Data engineering and pipelines
+    layer: L2
+    depth: deep
+    why: Moving data reliably from where it lives to where it's useful is most of the early work on an engagement.
+    objectives:
+      - Lay out raw, cleaned and business-ready layers, and choose ETL or ELT
+      - Load incrementally with a high-water mark or change data capture
+      - Transform with dbt, and work locally with pandas, polars or DuckDB
+      - Orchestrate a DAG with schedules, retries and backfills
+      - Make loads idempotent, and handle late, duplicate and out-of-order data and schema changes
+      - Test freshness, volume and quality, and track lineage
+      - Parse and chunk unstructured data, and keep embeddings in sync
+    strong_when: You have a pipeline you can safely re-run for any date range, and it alerts you when data is late or wrong.
+    requires: ["2.1", "2.5"]
+    related: ["2.6", "1.6"]
+    resources:
+      - {title: "Fundamentals of Data Engineering (Reis and Housley)", kind: book}
+      - {title: "dbt Learn courses", kind: course, free: true}
+      - {title: "Designing Data-Intensive Applications (Kleppmann)", kind: book}
+    est_hours: 80
+    tags: ["curriculum:M2"]
+
+  - id: "2.8"
+    title: Cloud and infrastructure
+    layer: L2
+    depth: deep
+    why: You'll deploy into the customer's cloud, and cloud networking and permissions are where enterprise deployments stall.
+    objectives:
+      - Explain regions, availability zones, managed services and shared responsibility
+      - Choose among VMs, containers and serverless functions
+      - Use object, block and file storage, and managed databases
+      - Set up VPCs, private subnets, security groups, private endpoints and NAT
+      - Write least-privilege IAM roles and policies
+      - Build Docker images and Compose stacks, and read Kubernetes config
+      - Provision with Terraform and deploy with CI/CD
+      - Estimate compute, storage and egress costs
+    strong_when: You can deploy a containerized service into a private subnet, reachable only through single sign-on, from a CI pipeline, using Terraform.
+    requires: ["1.5", "1.7"]
+    related: ["2.3"]
+    resources:
+      - {title: "An associate-level cloud certification syllabus (AWS Solutions Architect or Azure Administrator)", kind: course}
+    est_hours: 60
+    tags: ["curriculum:W2"]
+
+  - id: "2.9"
+    title: Operations and reliability
+    layer: L2
+    depth: working
+    why: Production means someone notices when it breaks, ideally you and not the customer.
+    objectives:
+      - Instrument logs, metrics and traces
+      - Alert on user-facing symptoms without alert fatigue
+      - Define SLIs and SLOs
+      - Run an incident, mitigating first and writing a blameless postmortem and runbook after
+      - Plan backups, recovery targets, rollbacks and feature flags
+    strong_when: You hear about a failure from your own alerts, not from the customer, and a runbook for it already exists.
+    requires: ["1.7", "2.3"]
+    related: ["2.8"]
+    resources:
+      - {title: "Site Reliability Engineering (Google)", url: "https://sre.google/sre-book/table-of-contents/", kind: book, free: true}
+    est_hours: 25
+    tags: ["curriculum:M4"]
+
+  - id: "2.10"
+    title: Security fundamentals
+    layer: L2
+    depth: working
+    why: No enterprise lets you near real data without it, and one mistake can end an engagement.
+    objectives:
+      - Explain authentication vs authorization, single sign-on and MFA
+      - Apply least privilege, role-based access and row-level security
+      - Manage secrets, and encrypt in transit and at rest
+      - Prevent the OWASP Top 10, especially injection and broken access control
+      - Handle personal data with classification, masking, retention and audit logs
+      - Know the compliance vocabulary, from SOC 2 and GDPR to ITAR and CMMC
+    strong_when: You can walk the customer's security team through a threat model of your design and answer their questions.
+    requires: ["1.5", "1.6"]
+    related: ["2.8"]
+    resources:
+      - {title: "OWASP Top 10", url: "https://owasp.org/Top10/", kind: docs, free: true}
+    est_hours: 30
+
+  # ---------------------------------------------------------------- Layer 3: AI layer
+  - id: "3.1"
+    title: Statistics for AI work
+    layer: L3
+    depth: working
+    why: Every claim that something improved is a statistical claim, and customers will test it.
+    objectives:
+      - Compute standard errors and confidence intervals
+      - Run hypothesis tests, and correct for multiple comparisons
+      - Spot selection bias, survivorship bias, confounding and Simpson's paradox
+      - Size an eval set and put a confidence interval on a pass rate
+      - Measure agreement between human graders (Cohen's kappa)
+    strong_when: You know a pass rate near 85% on 100 cases has a 95% interval of about ±7 points, so a 4-point gain may be noise.
+    requires: ["P3"]
+    related: ["1.4"]
+    resources:
+      - {title: "Practical Statistics for Data Scientists (Bruce, Bruce and Gedeck)", kind: book}
+    est_hours: 40
+    tags: ["curriculum:M3", "curriculum:M5"]
+
+  - id: "3.2"
+    title: ML fundamentals
+    layer: L3
+    depth: working
+    why: Many customer problems are classic ML (forecasting, anomaly detection, classification), and some need no ML at all.
+    objectives:
+      - Frame regression, classification, clustering and anomaly detection, and know when rules or SQL are enough
+      - Split data correctly, including time-aware splits, and always build a baseline
+      - Detect target, temporal and train/test leakage
+      - Train linear models, trees, random forests and gradient boosting
+      - Engineer features, including lag and rolling-window features
+      - Evaluate with precision, recall, PR-AUC and calibration, and pick thresholds by business cost
+    strong_when: You can build an honest baseline, beat it, and defend your evaluation design to a skeptic.
+    requires: ["3.1", "2.1"]
+    resources:
+      - {title: "Hands-On Machine Learning (Géron), Part I", kind: book}
+    est_hours: 60
+    tags: ["curriculum:M3"]
+
+  - id: "3.3"
+    title: How neural networks and LLMs work
+    layer: L3
+    depth: working
+    why: You can't explain a model's behavior to a customer, or predict where it will fail, if it's a black box to you.
+    objectives:
+      - Explain layers, loss, gradient descent and backpropagation conceptually
+      - Explain embeddings and cosine similarity
+      - Explain tokens, attention, context windows and next-token prediction
+      - Describe pretraining, instruction tuning and preference tuning
+      - Explain sampling, temperature, non-determinism and why models hallucinate
+      - Compare frontier API models with open-weight models, and explain quantization
+    strong_when: You can explain to a customer why the model made something up, and which fixes will and won't help.
+    requires: ["P2", "P3"]
+    related: ["3.2"]
+    resources:
+      - {title: "Intro to Large Language Models (Karpathy talk)", kind: video, free: true}
+      - {title: "Neural Networks: Zero to Hero (Karpathy)", url: "https://karpathy.ai/zero-to-hero.html", kind: course, free: true}
+      - {title: "3Blue1Brown neural network videos", url: "https://www.3blue1brown.com/topics/neural-networks", kind: video, free: true}
+    est_hours: 40
+    tags: ["curriculum:W3"]
+
+  - id: "3.4"
+    title: Prompt and context engineering
+    layer: L3
+    depth: deep
+    why: It's the cheapest lever you have, and usually the first thing that's wrong.
+    objectives:
+      - Structure system prompts with a role, task, constraints and examples
+      - Get structured output with a schema, validation and retries
+      - Decide what goes in the context window and in what order, and use prompt caching
+      - Give the model room to reason, and chain steps
+      - Add guardrails with policy instructions and input and output filters
+      - Version prompts, and judge every change against evals
+    strong_when: You raise a prompt's pass rate on an eval set and can explain why each change helped.
+    requires: ["3.3", "1.6"]
+    resources:
+      - {title: "Anthropic prompt engineering interactive tutorial", url: "https://github.com/anthropics/prompt-eng-interactive-tutorial", kind: course, free: true}
+    est_hours: 25
+    tags: ["curriculum:W4"]
+
+  - id: "3.5"
+    title: Retrieval (RAG) and knowledge systems
+    layer: L3
+    depth: deep
+    why: The model doesn't know the customer's data, and retrieval is how that data gets into the context.
+    objectives:
+      - Parse, OCR and chunk documents, and attach metadata
+      - Combine vector search, BM25 keyword search and reranking
+      - Use text-to-SQL, knowledge graphs or agentic retrieval when vectors aren't enough
+      - Enforce source-system permissions at retrieval time
+      - Measure recall at k and groundedness, and handle unanswerable questions
+      - Keep the index fresh as sources change
+    strong_when: When an answer is wrong, you can tell whether retrieval or generation caused it, and fix that one.
+    requires: ["3.4", "2.5"]
+    related: ["2.7"]
+    resources:
+      - {title: "Introducing Contextual Retrieval (Anthropic)", url: "https://www.anthropic.com/news/contextual-retrieval", kind: article, free: true}
+    est_hours: 40
+    tags: ["curriculum:W4"]
+
+  - id: "3.6"
+    title: Tools, agents and MCP
+    layer: L3
+    depth: deep
+    why: This is where AI stops answering and starts acting inside the customer's systems.
+    objectives:
+      - Define tool schemas, and handle the call-result loop and tool errors
+      - Build an agent loop with stopping conditions, and know when a fixed workflow is better
+      - Apply chaining, routing, parallelization, orchestrator-workers and evaluator-optimizer patterns
+      - Build an MCP server that exposes tools and resources, with authentication
+      - Use one agent framework well, and explain what it hides
+      - Gate writes behind human approval, with least-privilege tools and audit trails
+    strong_when: You've shipped an agent that uses three or more tools against a real system, with approval gates, and can explain every failure from its traces.
+    requires: ["3.4", "1.6", "2.1"]
+    related: ["2.4"]
+    resources:
+      - {title: "Building Effective Agents (Anthropic)", url: "https://www.anthropic.com/engineering/building-effective-agents", kind: article, free: true}
+      - {title: "Model Context Protocol docs", url: "https://modelcontextprotocol.io", kind: docs, free: true}
+    est_hours: 50
+    tags: ["curriculum:W4"]
+
+  - id: "3.7"
+    title: Evaluation
+    layer: L3
+    depth: deep
+    why: Model output isn't deterministic, so "it worked when I tried it" is not evidence.
+    objectives:
+      - Build eval sets from real usage, edge cases and adversarial cases
+      - Grade with code checks, an LLM judge validated against humans, and human review
+      - Measure task success, groundedness, tool-call correctness, safety, speed and cost
+      - Evaluate agents on both the path they took and the outcome
+      - Do error analysis by reading and categorizing failures
+      - Run a regression suite in CI, and compare prompts and models
+    strong_when: Before any change ships, you can show a number with a confidence interval proving it didn't get worse.
+    requires: ["3.1", "3.4"]
+    resources:
+      - {title: "Your AI Product Needs Evals (Hamel Husain)", url: "https://hamel.dev/blog/posts/evals/", kind: article, free: true}
+    est_hours: 40
+    tags: ["curriculum:M4"]
+
+  - id: "3.8"
+    title: Production AI (operations, cost and observability)
+    layer: L3
+    depth: deep
+    why: The customer will ask what it costs, how fast it is and how you'll know when it gets worse.
+    objectives:
+      - Trace every prompt, tool call and response
+      - Monitor latency, tokens, cost, errors, rate limits and quality drift
+      - Add retries, timeouts, model fallbacks and streaming
+      - Cut cost and latency with routing, caching, batching and trimmed context
+      - Version prompts, models and configs, and re-run evals on every upgrade
+      - Choose between a direct API, a cloud provider and self-hosted models
+    strong_when: You can tell the customer the cost per request, the speed, and how you'd detect a drop in quality.
+    requires: ["3.7", "2.9"]
+    related: ["2.8"]
+    resources:
+      - {title: "AI Engineering (Huyen), inference and architecture chapters", kind: book}
+    est_hours: 30
+    tags: ["curriculum:M4"]
+
+  - id: "3.9"
+    title: Adapting models (fine-tuning, and when not to)
+    layer: L3
+    depth: working
+    why: Customers often ask for fine-tuning when a better prompt or better retrieval would fix the problem.
+    objectives:
+      - Try prompting, retrieval, tools, fine-tuning and training, in that order
+      - Explain supervised fine-tuning, DPO, LoRA and distillation
+      - Recognize when fine-tuning is right, such as format consistency, cost or narrow classification
+      - Count the cost of data prep, evals and ongoing maintenance
+    strong_when: You can argue convincingly why a customer doesn't need fine-tuning, and recognize the cases where they do.
+    requires: ["3.2", "3.7"]
+    resources:
+      - {title: "AI Engineering (Huyen), fine-tuning chapter", kind: book}
+    est_hours: 20
+
+  - id: "3.10"
+    title: AI security and governance
+    layer: L3
+    depth: working
+    why: Agents that can take actions open new ways to attack a system.
+    objectives:
+      - Defend against direct and indirect prompt injection and data leaking through tools
+      - Apply least-privilege tools, human approval, input isolation, output validation and sandboxing
+      - Handle personal data in prompts and logs, retention and where data is processed
+      - Apply the NIST AI RMF, and know the basics of the EU AI Act
+      - Keep audit trails for agent actions
+    strong_when: The customer's risk and compliance team signs off on your agent design.
+    requires: ["2.10", "3.6"]
+    resources:
+      - {title: "OWASP Top 10 for LLM Applications", url: "https://genai.owasp.org/llm-top-10/", kind: docs, free: true}
+      - {title: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework", kind: docs, free: true}
+    est_hours: 20
+
+  # ---------------------------------------------------------------- Layer 4: Field skills (draft)
+  - id: "4.1"
+    title: Business fundamentals
+    layer: L4
+    depth: working
+    why: What's worth building depends on what the problem costs the customer.
+    objectives:
+      - Read a P&L and explain gross margin, operating expenses and EBITDA
+      - Price a problem in labor, downtime, scrap and working capital
+      - Compute ROI and payback, and explain NPV
+      - Name what finance, operations, supply chain, sales and IT each measure
+    strong_when: You can state the problem in the customer's dollars before writing any code.
+    related: ["P3"]
+    resources:
+      - {title: "Financial Intelligence (Berman and Knight)", kind: book}
+    est_hours: 30
+    tags: ["day-job", "curriculum:W5"]
+
+  - id: "4.2"
+    title: How enterprises buy and adopt technology
+    layer: L4
+    depth: working
+    why: Deployments stall on procurement, security reviews and access far more often than on code.
+    objectives:
+      - Map the champion, economic buyer, technical evaluator, procurement, legal and security
+      - Move from proof of concept to paid pilot to contract to expansion, with success criteria agreed up front
+      - Work through approved-vendor lists, change boards and access requests
+      - Know what an NDA, MSA, SOW, SLA and DPA are for
+      - Compare per-seat, usage and outcome pricing
+    strong_when: You can predict what will block a deployment, and you start those items in week one.
+    requires: ["4.1"]
+    resources:
+      - {title: "The MEDDICC framework", kind: article}
+      - {title: "Crossing the Chasm (Moore)", kind: book}
+    est_hours: 15
+
+  - id: "4.3"
+    title: Industry and domain knowledge
+    layer: L4
+    depth: deep
+    why: FDEs who know the domain earn trust faster and spot the real problem sooner.
+    objectives:
+      - Explain order-to-cash, procure-to-pay, plan-to-produce and record-to-report
+      - Recognize ERP, CRM, IT service management and M365, plus MES and historians in manufacturing
+      - Learn a domain's jargon, regulations, metrics and users quickly
+      - Go deep in one industry
+    strong_when: You can follow a meeting with the customer's operators without anyone translating.
+    requires: ["4.1"]
+    resources:
+      - {title: "Annual reports (10-Ks) of the top three companies in your industry", kind: article, free: true}
+    est_hours: 60
+    tags: ["day-job", "curriculum:M5"]
+
+  - id: "4.4"
+    title: Discovery
+    layer: L4
+    depth: deep
+    why: What you build can only be as right as what you learned first.
+    objectives:
+      - Interview and shadow users, and collect the spreadsheets they rely on
+      - Ask about past behavior rather than hypotheticals, and use the 5 whys
+      - Separate the stated request from the need that has money attached
+      - Map the current process, and inventory data sources and owners
+      - Write a problem statement with a success metric and a baseline
+    strong_when: The frontline user and the executive both agree your problem statement names the right problem.
+    related: ["4.7"]
+    resources:
+      - {title: "The Mom Test (Fitzpatrick)", kind: book}
+      - {title: "Continuous Discovery Habits (Torres)", kind: book}
+    est_hours: 30
+    tags: ["day-job"]
+
+  - id: "4.5"
+    title: Problem decomposition and solution design
+    layer: L4
+    depth: deep
+    why: It turns a fuzzy problem into pieces you can build, and Palantir reportedly interviews for it directly.
+    objectives:
+      - Break a problem into MECE parts, and work backward from the user's outcome
+      - Test the riskiest assumption first
+      - Define the thinnest end-to-end slice that proves value
+      - Compare build, buy and configure, with an architecture sketch and failure modes
+      - Write a one-to-two-page design doc
+    strong_when: Given "help us reduce downtime," you produce scoped options with data needs, risks and a first slice within 45 minutes.
+    requires: ["4.4"]
+    related: ["1.3"]
+    resources:
+      - {title: "Bulletproof Problem Solving (Conn and McLean)", kind: book}
+    est_hours: 30
+
+  - id: "4.6"
+    title: Product sense and prototyping
+    layer: L4
+    depth: working
+    why: Adoption is the real measure of success, and a working demo beats a slide deck.
+    objectives:
+      - Identify the user and the job they're trying to get done
+      - Design AI features with citations, easy correction and human checkpoints
+      - Go from sketch to clickable mockup to a demo on real data
+      - Watch users try it without helping, and iterate weekly
+      - Prioritize by impact and effort, and cut scope
+    strong_when: Users choose your tool over their old spreadsheet without being told to.
+    requires: ["4.4"]
+    related: ["2.2"]
+    resources:
+      - {title: "Inspired (Cagan)", kind: book}
+      - {title: "Don't Make Me Think (Krug)", kind: book}
+    est_hours: 25
+
+  - id: "4.7"
+    title: Communication
+    layer: L4
+    depth: deep
+    why: You represent your company in the room, and every audience needs something different.
+    objectives:
+      - Lead with the answer, cost, risk and decision needed for executives
+      - Cover architecture, security and operating burden for IT
+      - Explain what changes, and why it's easier, for end users
+      - Write status updates, design docs and meeting notes with owners and dates
+      - Demo on the customer's own data, and whiteboard live
+      - Deliver bad news early, with options
+    strong_when: An executive can accurately repeat your recommendation after one meeting.
+    resources:
+      - {title: "The Pyramid Principle (Minto)", kind: book}
+    est_hours: 30
+    tags: ["day-job"]
+
+  - id: "4.8"
+    title: Stakeholder management and influence
+    layer: L4
+    depth: deep
+    why: You get things done through people you don't manage.
+    objectives:
+      - Map champions, blockers, signers and gatekeepers on a power and interest grid
+      - Build credibility with early wins, and bring skeptics in early
+      - Put success criteria in writing, and handle scope creep
+      - Push back with trade-offs rather than refusals
+      - Navigate rival departments and people who feel threatened by the tool
+      - Escalate to your own leadership at the right time
+    strong_when: A skeptical stakeholder becomes an advocate.
+    requires: ["4.7"]
+    resources:
+      - {title: "Influence Without Authority (Cohen and Bradford)", kind: book}
+      - {title: "Crucial Conversations", kind: book}
+    est_hours: 20
+
+  - id: "4.9"
+    title: Enablement and change management
+    layer: L4
+    depth: working
+    why: If nobody uses the system after you leave, the engagement failed.
+    objectives:
+      - Train users, and train the trainers
+      - Write runbooks the customer's IT team can follow alone
+      - Apply the ADKAR change model, and recruit champions among users
+      - Track usage, and follow up on drop-off
+    strong_when: The system is still running and in use three months after you've left.
+    requires: ["4.7"]
+    resources:
+      - {title: "Prosci ADKAR model overview", kind: article, free: true}
+    est_hours: 15
+
+  - id: "4.10"
+    title: Delivery and project management
+    layer: L4
+    depth: deep
+    why: Engagements succeed or fail on sequencing, dependencies and early warnings.
+    objectives:
+      - Scope with fixed time and flexible scope, thin slices first
+      - Start access, data and security-review dependencies on day one
+      - Estimate in ranges with buffers, and find the critical path
+      - Run weekly demos, a decision log and a RAID log
+      - Run pre-mortems, and flag risks early
+      - Juggle several deployments at once
+    strong_when: Projects land when promised, and when they can't, the customer heard it from you weeks earlier.
+    requires: ["4.5"]
+    resources:
+      - {title: "Shape Up (Basecamp)", url: "https://basecamp.com/shapeup", kind: book, free: true}
+    est_hours: 25
+
+  - id: "4.11"
+    title: Judgment and ownership under pressure
+    layer: L4
+    depth: deep
+    why: The role runs hot, and the calls you make under pressure define your reputation.
+    objectives:
+      - Own outcomes, including unglamorous work like cleaning data and chasing access
+      - Separate one-way-door from two-way-door decisions, and act on good-enough information
+      - Stay composed through failed demos, incidents and angry stakeholders
+      - Refuse to oversell, and say plainly what AI can't do
+      - Manage travel, energy and boundaries
+    strong_when: Under pressure you make a sound call quickly, and can explain your reasoning afterward.
+    related: ["4.10"]
+    resources:
+      - {title: "Thinking in Bets (Duke)", kind: book}
+      - {title: "A decision journal", kind: practice}
+    est_hours: 20
+
+  - id: "4.12"
+    title: Learning speed
+    layer: L4
+    depth: deep
+    why: Every engagement brings a new domain, stack and set of systems, and the models change every few months.
+    objectives:
+      - Learn a codebase by finding entry points, following one request and running the tests
+      - Learn a domain in week one with a glossary, org chart, top workflows and key metrics
+      - Ask questions that say what you tried, expected and saw
+      - Track model releases and changelogs, and try new techniques quickly
+      - Teach back what you learned (the Feynman technique)
+    strong_when: You're useful in an unfamiliar codebase or industry within a week.
+    requires: ["P7"]
+    related: ["P6"]
+    resources:
+      - {title: "Make It Stick (Brown, Roediger and McDaniel)", kind: book}
+    est_hours: 15
+
+projects:
+  - id: groundwork
+    title: Groundwork
+    description: This app, v1 Local.
+    requires: ["1.3", "2.2", "2.3", "2.5", "2.6"]
+  - id: ledger
+    title: Ledger
+    description: A production money pipeline that runs every day (the public core of a personal ops system).
+    requires: ["1.6", "1.7", "2.1", "2.3", "2.5", "2.6", "2.7", "2.9", "3.4", "3.7", "3.8"]
+  - id: plant-mcp
+    title: plant-mcp
+    description: Connect an AI agent to a simulated plant, safely.
+    requires: ["1.5", "1.6", "1.7", "2.1", "2.4", "2.7", "3.4", "3.6", "3.10", "4.3"]
+  - id: opsbench
+    title: OpsBench
+    description: Prove agents work on operational tasks, with published evals.
+    requires: ["2.3", "3.1", "3.7", "3.8", "4.5"]
+  - id: spreadsheet-autopsy
+    title: Spreadsheet Autopsy
+    description: Reverse-engineer the workbook the business actually runs on.
+    requires: ["1.3", "2.1", "2.6", "3.4", "4.1", "4.4"]

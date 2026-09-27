@@ -1,0 +1,57 @@
+{
+  "_comment": "Example only. Real progress lives in the browser (IndexedDB) and is exported to a file like this. Never commit your real progress file. This example obeys the unlock rules: P1 and P5 are at working, so P2 and 2.3 are unlocked.",
+  "map": "fde@0.1.0",
+  "active_project": "groundwork",
+  "milestones": [
+    { "id": "gate-2026-12", "title": "Foundation live", "due": "2026-12-31", "requires_projects": ["ledger"] },
+    { "id": "gate-2027-05", "title": "Data layer", "due": "2027-05-31", "requires_projects": ["spreadsheet-autopsy"] },
+    { "id": "gate-2027-09", "title": "Plant connected", "due": "2027-09-30", "requires_projects": ["plant-mcp"] },
+    { "id": "gate-2027-12", "title": "Proof", "due": "2027-12-31", "requires_projects": ["opsbench"] },
+    { "id": "gate-2028-04", "title": "Portfolio complete", "due": "2028-04-30", "requires_projects": ["ledger", "plant-mcp", "opsbench", "spreadsheet-autopsy"] }
+  ],
+  "nodes": {
+    "P1": {
+      "level": "working",
+      "objectives_done": [0, 1, 2, 3],
+      "evidence": [
+        { "type": "objective", "url": "https://github.com/you/dotfiles", "note": "Test out: set up a machine from scratch by path and package manager", "date": "2026-10-01" }
+      ],
+      "started": "2026-10-01",
+      "reached_working": "2026-10-01",
+      "next_review": "2026-10-08",
+      "reviews_done": 0
+    },
+    "P2": {
+      "level": "working",
+      "objectives_done": [0, 1, 2, 3, 4, 5, 6],
+      "evidence": [
+        { "type": "objective", "url": "https://github.com/you/csv-summary", "note": "Test out: CSV summary script written without copying code", "date": "2026-10-01" }
+      ],
+      "started": "2026-10-01",
+      "reached_working": "2026-10-01",
+      "next_review": "2026-10-08",
+      "reviews_done": 0
+    },
+    "P5": {
+      "level": "working",
+      "objectives_done": [0, 1, 2, 3],
+      "evidence": [
+        { "type": "objective", "url": "https://github.com/you/groundwork", "note": "Test out: this repo, run from the terminal and pushed", "date": "2026-10-02" }
+      ],
+      "started": "2026-10-02",
+      "reached_working": "2026-10-02",
+      "next_review": "2026-10-09",
+      "reviews_done": 0
+    },
+    "2.3": {
+      "level": "learning",
+      "objectives_done": [0, 2],
+      "evidence": [],
+      "started": "2026-10-04",
+      "notes": "CI passes on the empty app. Next: fixtures and mocks."
+    }
+  },
+  "sessions": [
+    { "date": "2026-10-04", "minutes": 60, "nodes": ["2.3"], "milestone": "M0", "note": "The GitHub Actions workflow clicked once I read the YAML line by line." }
+  ]
+}
