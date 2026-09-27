@@ -10,8 +10,9 @@ describe('App', () => {
     ).toBeInTheDocument()
   })
 
-  it('finds the seed map file', () => {
+  it('loads and validates the seed map', () => {
     render(<App />)
-    expect(screen.getByText(/46 nodes found/)).toBeInTheDocument()
+    expect(screen.getByText(/46 nodes in 5 layers/)).toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 })

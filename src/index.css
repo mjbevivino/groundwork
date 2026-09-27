@@ -38,3 +38,7 @@ body {
   border-left: 3px solid var(--border);
   padding-left: 12px;
 }
+
+.errors {
+  white-space: pre-wrap;
+}
