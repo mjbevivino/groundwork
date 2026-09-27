@@ -92,7 +92,7 @@ function describeProblem(error: ErrorObject, value: unknown): string {
           `Put quotes around ids so they stay strings (write "2.10", not 2.10).`
         )
       }
-      return `must be a ${params.type}, but got ${describeValue(value)}`
+      return `must be ${typeNames[params.type as string] ?? params.type}, but got ${describeValue(value)}`
     case 'required':
       return `missing required field "${params.missingProperty}"`
     case 'additionalProperties':
@@ -106,6 +106,14 @@ function describeProblem(error: ErrorObject, value: unknown): string {
     default:
       return error.message ?? 'is invalid'
   }
+}
+
+const typeNames: Record<string, string> = {
+  string: 'a string',
+  number: 'a number',
+  boolean: 'true or false',
+  array: 'a list',
+  object: 'an object',
 }
 
 function describeValue(value: unknown): string {
