@@ -1,4 +1,4 @@
-import { useEffect, useId } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import type { GroundworkMap, Id, MapNode } from '../map/types'
 import type { Level } from '../progress/levels'
 import {
@@ -38,6 +38,19 @@ export function NodePanel({
   onChange,
   onClose,
 }: NodePanelProps) {
+  // Move focus into the panel when it opens, and back where it was on close,
+  // so keyboard users land on the details and return to their place.
+  const heading = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    const previous = document.activeElement
+    heading.current?.focus()
+    return () => {
+      if (previous instanceof HTMLElement && previous.isConnected) {
+        previous.focus()
+      }
+    }
+  }, [])
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose()
@@ -71,7 +84,9 @@ export function NodePanel({
           Close
         </button>
       </div>
-      <h2>{node.title}</h2>
+      <h2 ref={heading} tabIndex={-1}>
+        {node.title}
+      </h2>
       <p>{node.why}</p>
 
       <h3>Level</h3>

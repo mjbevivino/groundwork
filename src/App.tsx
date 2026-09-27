@@ -13,6 +13,7 @@ import type { Progress } from './progress/types'
 import { useProgress } from './progress/useProgress'
 import { nextUp } from './rank/nextUp'
 import { DashboardView } from './ui/DashboardView'
+import { ListView } from './ui/ListView'
 import { MapView } from './ui/MapView'
 import { NextUpView } from './ui/NextUpView'
 import { NodePanel } from './ui/NodePanel'
@@ -62,10 +63,11 @@ function App() {
   )
 }
 
-type View = 'map' | 'next' | 'projects' | 'dashboard'
+type View = 'map' | 'list' | 'next' | 'projects' | 'dashboard'
 
 const VIEWS: { id: View; label: string }[] = [
   { id: 'map', label: 'Map' },
+  { id: 'list', label: 'List' },
   { id: 'next', label: 'Next up' },
   { id: 'projects', label: 'Projects' },
   { id: 'dashboard', label: 'Dashboard' },
@@ -181,6 +183,15 @@ function Workbench({
     <div className="app-body">
       {view === 'map' && (
         <MapView
+          map={map}
+          levels={levels}
+          needsReview={needsReview}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+        />
+      )}
+      {view === 'list' && (
+        <ListView
           map={map}
           levels={levels}
           needsReview={needsReview}
