@@ -12,13 +12,14 @@ The owner is building this to learn and to get a tool he'll use daily. He's a da
 
 The goal is a working v1 in about 10 hours. **You write the code; the owner reviews it.** Keep him in the loop so he understands what he owns.
 
-1. Work one milestone at a time, in small steps, one commit per step, with a clear message.
-2. Before each step, say in one line what you're about to do. After it, summarize what changed in two or three lines.
-3. At the end of each milestone, give a short walkthrough: which files to read first and the one idea that matters most. Then ask the owner to explain one piece back before you move on.
-4. A milestone is done only when its "Done when" check passes and `npm run lint`, `npm test` and `npm run build` all pass. Say so explicitly.
-5. At the end of each session, append one to three lines to `SESSION_LOG.md`: date, milestone, what was learned, what's stuck.
-6. Don't build beyond the current milestone. Park ideas in `IDEAS.md`.
-7. Watch the clock. If a milestone runs past its budget by half, stop and offer the cut list below.
+1. Start each milestone with a short primer, before any code: what we're building and why; the two or three concepts it uses, each with an everyday or Excel analogy; and which FDE map pillars (node ids in `maps/fde.yaml`) those concepts belong to.
+2. Work one milestone at a time, in small steps, one commit per step, with a clear message.
+3. Before each step, say in one line what you're about to do. After it, summarize what changed in two or three lines.
+4. At the end of each milestone, give a short walkthrough: which files to read first and the one idea that matters most. Then ask the owner to explain one piece back before you move on.
+5. A milestone is done only when its "Done when" check passes and `npm run lint`, `npm test` and `npm run build` all pass. Say so explicitly.
+6. At the end of each session, append one to three lines to `SESSION_LOG.md`: date, milestone, what was learned, what's stuck.
+7. Don't build beyond the current milestone. Park ideas in `IDEAS.md`.
+8. Watch the clock. If a milestone runs past its budget by half, stop and offer the cut list below.
 
 ## Stack (installed and verified)
 
