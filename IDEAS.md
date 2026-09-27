@@ -14,4 +14,4 @@ Anything that isn't the current milestone goes here, not into the code.
 
 ## New ideas
 
--
+- Precompile the Ajv validator at build time (Ajv standalone code) to drop Ajv from the bundle: it adds about 195 kB (M1)
