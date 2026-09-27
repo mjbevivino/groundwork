@@ -541,3 +541,350 @@ body {
 .list-view h3 {
   margin: 20px 0 8px;
 }
+
+/* ---------------------------------------------------------------- path */
+
+.reading {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.primary {
+  padding: 6px 14px;
+  border: 1px solid var(--focus);
+  border-radius: 8px;
+  background: var(--focus);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary:disabled {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.continue-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 8px 0 20px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--focus);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.continue-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.continue-title .badge {
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.segmented button {
+  padding: 4px 12px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--lane-bg);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.unit {
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.unit h3 {
+  margin: 0;
+}
+
+.unit-header {
+  display: grid;
+  grid-template-columns: auto 1fr minmax(80px, 160px) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.unit-count {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A plain meter: quiet track, one fill, rounded ends; the text beside it
+   carries the value, so color is never the only signal. */
+.meter {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--lane-bg);
+  box-shadow: inset 0 0 0 1px var(--border);
+  overflow: hidden;
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--level-working);
+}
+
+.unit-topics {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0 16px 14px 44px;
+}
+
+.unit-topics li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topic-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--level, var(--level-locked));
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topic-row.level-locked {
+  opacity: 1;
+  border-style: solid;
+  color: var(--muted);
+}
+
+.topic-row-id {
+  min-width: 2.5em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.topic-row-title {
+  flex: 1;
+  font-weight: 600;
+}
+
+.topic-row .badge {
+  font-size: 12px;
+}
+
+.needs {
+  padding-left: 17px;
+}
+
+/* ---------------------------------------------------------------- lesson */
+
+.lesson {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.lesson h2 {
+  margin: 4px 0 12px;
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.lesson h2:focus {
+  outline: none;
+}
+
+.lesson h3 {
+  margin: 28px 0 8px;
+  font-size: 18px;
+}
+
+.lesson-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.breadcrumb {
+  color: var(--muted);
+}
+
+.lesson-header {
+  margin: 16px 0 8px;
+}
+
+.lesson .checklist li {
+  margin: 8px 0;
+}
+
+.lesson .actions button,
+.lesson .evidence-form button {
+  padding: 6px 14px;
+  border: 1px solid var(--focus);
+  border-radius: 8px;
+  background: var(--focus);
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.lesson .actions button:disabled,
+.lesson .evidence-form button:disabled {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.lesson .evidence-form input,
+.lesson .evidence-form select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.strong-when p {
+  padding: 12px 16px;
+  border-left: 4px solid var(--level-deep);
+  border-radius: 6px;
+  background: var(--lane-bg);
+}
+
+.resource-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 15px;
+}
+
+.resource-card a,
+.resource-title {
+  font-weight: 600;
+}
+
+.offer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 12px 16px;
+  border: 1px solid var(--level-working);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 36px 0 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.lesson-nav button {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .continue-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .unit-header {
+    grid-template-columns: auto 1fr auto;
+  }
+  .unit-header .meter {
+    display: none;
+  }
+  .unit-topics {
+    padding-left: 16px;
+  }
+}

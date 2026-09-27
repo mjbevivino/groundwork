@@ -46,6 +46,8 @@ export interface Progress {
   /** Map id and version, e.g. "fde@0.1.0". */
   map: string
   active_project?: Id
+  /** The last topic opened as a lesson, for the Continue bar. */
+  last_opened?: Id
   milestones?: Milestone[]
   nodes: Record<Id, NodeProgress>
   sessions?: Session[]

@@ -9,14 +9,17 @@ import { loadMap } from './map/load'
 import type { GroundworkMap, Id } from './map/types'
 import { computeLevels } from './progress/levels'
 import { isoDate, isReviewDue, levelsOf } from './progress/rules'
-import type { Progress } from './progress/types'
+import type { NodeProgress, Progress } from './progress/types'
 import { useProgress } from './progress/useProgress'
-import { nextUp } from './rank/nextUp'
+import { nextUp, projectPath } from './rank/nextUp'
+import { scopeSummary, studyOrder, units } from './rank/path'
 import { DashboardView } from './ui/DashboardView'
+import { LessonView } from './ui/LessonView'
 import { ListView } from './ui/ListView'
 import { MapView } from './ui/MapView'
 import { NextUpView } from './ui/NextUpView'
 import { NodePanel } from './ui/NodePanel'
+import { PathView, type ContinueTarget } from './ui/PathView'
 import { ProgressFileButtons } from './ui/ProgressFileButtons'
 import { ProjectsView } from './ui/ProjectsView'
 
@@ -63,9 +66,10 @@ function App() {
   )
 }
 
-type View = 'map' | 'list' | 'next' | 'projects' | 'dashboard'
+type View = 'path' | 'map' | 'list' | 'next' | 'projects' | 'dashboard'
 
 const VIEWS: { id: View; label: string }[] = [
+  { id: 'path', label: 'Path' },
   { id: 'map', label: 'Map' },
   { id: 'list', label: 'List' },
   { id: 'next', label: 'Next up' },
@@ -76,7 +80,9 @@ const VIEWS: { id: View; label: string }[] = [
 function Workspace({ map }: { map: GroundworkMap }) {
   const { progress, update, error } = useProgress(map)
   const [importErrors, setImportErrors] = useState<string[]>([])
-  const [view, setView] = useState<View>('map')
+  const [view, setView] = useState<View>('path')
+  // The topic open as a full-page lesson in the Path tab, if any.
+  const [lessonId, setLessonId] = useState<Id | null>(null)
   const today = isoDate(new Date())
   const notices = [...(error ? [error] : []), ...importErrors]
 
@@ -91,7 +97,11 @@ function Workspace({ map }: { map: GroundworkMap }) {
               key={v.id}
               type="button"
               aria-current={view === v.id ? 'page' : undefined}
-              onClick={() => setView(v.id)}
+              onClick={() => {
+                setView(v.id)
+                // The Path tab always returns to the path overview.
+                if (v.id === 'path') setLessonId(null)
+              }}
             >
               {v.label}
             </button>
@@ -129,6 +139,8 @@ function Workspace({ map }: { map: GroundworkMap }) {
           map={map}
           view={view}
           onView={setView}
+          lessonId={lessonId}
+          onLesson={setLessonId}
           progress={progress}
           today={today}
           update={update}
@@ -144,6 +156,8 @@ interface WorkbenchProps {
   map: GroundworkMap
   view: View
   onView: (view: View) => void
+  lessonId: Id | null
+  onLesson: (id: Id | null) => void
   progress: Progress
   today: string
   update: (change: (prev: Progress) => Progress) => void
@@ -154,11 +168,14 @@ function Workbench({
   map,
   view,
   onView,
+  lessonId,
+  onLesson,
   progress,
   today,
   update,
 }: WorkbenchProps) {
   const [selectedId, setSelectedId] = useState<Id | null>(null)
+  const [scopeChoice, setScopeChoice] = useState<'project' | 'all' | null>(null)
   const close = useCallback(() => setSelectedId(null), [])
 
   // Locked and ready are recomputed from the map every time progress changes.
@@ -179,8 +196,74 @@ function Workbench({
   )
   const selected = map.nodes.find((n) => n.id === selectedId)
 
+  // The Path tab: one study order, scoped to the active project or the map.
+  const project = map.projects?.find((p) => p.id === progress.active_project)
+  const scopeKind = project ? (scopeChoice ?? 'project') : 'all'
+  const fullOrder = useMemo(() => studyOrder(map), [map])
+  const pathOrder = useMemo(
+    () =>
+      project && scopeKind === 'project'
+        ? studyOrder(map, projectPath(map, project.id))
+        : fullOrder,
+    [map, fullOrder, project, scopeKind],
+  )
+  const pathUnits = units(map, pathOrder, levels)
+  // A lesson outside the current scope walks the whole map instead.
+  const lessonOrder =
+    lessonId && !pathOrder.includes(lessonId) ? fullOrder : pathOrder
+  const lessonUnits =
+    lessonOrder === pathOrder ? pathUnits : units(map, fullOrder, levels)
+  const lesson = map.nodes.find((n) => n.id === lessonId)
+
+  const last = progress.last_opened
+  const lastLevel = last ? levels.get(last) : undefined
+  const continueTarget: ContinueTarget | undefined =
+    last && lastLevel && lastLevel !== 'working' && lastLevel !== 'deep'
+      ? { id: last, reason: 'Pick up where you left off.', resume: true }
+      : suggestions[0] && { ...suggestions[0], resume: false }
+
+  function openLesson(id: Id) {
+    onLesson(id)
+    onView('path')
+    update((prev) => ({ ...prev, last_opened: id }))
+  }
+
+  function changeNode(id: Id, next: NodeProgress) {
+    update((prev) => ({ ...prev, nodes: { ...prev.nodes, [id]: next } }))
+  }
+
   return (
     <div className="app-body">
+      {view === 'path' && lesson && (
+        <LessonView
+          key={lesson.id}
+          map={map}
+          node={lesson}
+          levels={levels}
+          progress={progress.nodes[lesson.id]}
+          today={today}
+          order={lessonOrder}
+          units={lessonUnits}
+          onChange={(next) => changeNode(lesson.id, next)}
+          onOpen={openLesson}
+          onBack={() => onLesson(null)}
+        />
+      )}
+      {view === 'path' && !lesson && (
+        <PathView
+          key={`${scopeKind}:${project?.id ?? ''}`}
+          map={map}
+          levels={levels}
+          scopeKind={scopeKind}
+          activeProject={project?.id}
+          units={pathUnits}
+          summary={scopeSummary(map, pathOrder, levels)}
+          continueTarget={continueTarget}
+          onScope={setScopeChoice}
+          onOpen={openLesson}
+          onPickProject={() => onView('projects')}
+        />
+      )}
       {view === 'map' && (
         <MapView
           map={map}
@@ -230,7 +313,7 @@ function Workbench({
           onSelect={setSelectedId}
         />
       )}
-      {selected && (
+      {selected && view !== 'path' && (
         <NodePanel
           key={selected.id}
           map={map}
@@ -238,12 +321,7 @@ function Workbench({
           levels={levels}
           progress={progress.nodes[selected.id]}
           today={today}
-          onChange={(next) =>
-            update((prev) => ({
-              ...prev,
-              nodes: { ...prev.nodes, [selected.id]: next },
-            }))
-          }
+          onChange={(next) => changeNode(selected.id, next)}
           onClose={close}
         />
       )}

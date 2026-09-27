@@ -1,24 +1,17 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { screen, waitFor, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import App from '../App'
 import { db } from '../progress/store'
+import { renderApp } from '../test/renderApp'
 
 beforeEach(async () => {
   await db.progress.clear()
 })
 
-async function renderApp() {
-  render(<App />)
-  await screen.findByText('Computer fluency')
-  return userEvent.setup()
-}
-
 const views = () => screen.getByRole('navigation', { name: 'Views' })
 
 describe('Next up, Projects and Dashboard views', () => {
   it('ranks the groundwork path first once it is the active project', async () => {
-    const user = await renderApp()
+    const { user } = await renderApp()
     await user.click(within(views()).getByRole('button', { name: 'Next up' }))
     expect(screen.getByText(/No active project/)).toBeInTheDocument()
 
@@ -44,7 +37,7 @@ describe('Next up, Projects and Dashboard views', () => {
   })
 
   it('opens the node panel from Next up', async () => {
-    const user = await renderApp()
+    const { user } = await renderApp()
     await user.click(within(views()).getByRole('button', { name: 'Next up' }))
     await user.click(
       screen.getByRole('button', { name: /P1 Computer fluency/ }),
@@ -55,7 +48,7 @@ describe('Next up, Projects and Dashboard views', () => {
   })
 
   it('shows plain counts on the dashboard', async () => {
-    const user = await renderApp()
+    const { user } = await renderApp()
     await user.click(within(views()).getByRole('button', { name: 'Dashboard' }))
     expect(
       screen.getByText(/topics at Working or Deep \(0%\)/),

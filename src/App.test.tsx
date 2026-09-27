@@ -1,29 +1,17 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react'
+import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import exampleSource from '../progress.example.json?raw'
-import App from './App'
 import { db } from './progress/store'
+import { renderApp as renderMapTab } from './test/renderApp'
 
 beforeEach(async () => {
   vi.restoreAllMocks()
   await db.progress.clear()
 })
 
-/** Render the app and wait for saved progress to load and the map to draw. */
-async function renderApp() {
-  const view = render(<App />)
-  await screen.findByText('Computer fluency')
-  const levelOf = (id: string) =>
-    view.container.querySelector(`[data-id="${id}"] .topic-level`)?.textContent
-  return { ...view, levelOf }
-}
+/** The app on the Map tab, once saved progress has loaded. */
+const renderApp = () => renderMapTab('Map')
 
 /** Open a node's panel. fireEvent.click, not user-event: user-event also
  * sends mousedown, which d3-zoom (inside React Flow) can't handle in jsdom. */

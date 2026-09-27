@@ -32,6 +32,7 @@ function richProgress(): Progress {
   return {
     map: 'fde@0.1.0',
     active_project: 'groundwork',
+    last_opened: 'P3',
     milestones: [
       {
         id: 'gate',
@@ -99,6 +100,12 @@ describe('import errors', () => {
     const result = importProgress('{ nope', map)
     expect(result.ok).toBe(false)
     if (!result.ok) expect(result.errors[0]).toMatch(/^Not valid JSON/)
+  })
+
+  it('rejects a last_opened topic that is not in the map', () => {
+    expect(
+      errorsFor({ map: 'fde@0.1.0', last_opened: 'Z9', nodes: {} }),
+    ).toEqual(['last_opened "Z9" is not in the map.'])
   })
 
   it('rejects progress for a different map', () => {

@@ -1,24 +1,14 @@
-import { render, screen, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import App from '../App'
 import { db } from '../progress/store'
+import { renderApp } from '../test/renderApp'
 
 beforeEach(async () => {
   await db.progress.clear()
 })
 
 async function openList() {
-  const user = userEvent.setup()
-  render(<App />)
-  await screen.findByText('Computer fluency')
-  await user.click(
-    within(screen.getByRole('navigation', { name: 'Views' })).getByRole(
-      'button',
-      { name: 'List' },
-    ),
-  )
-  return user
+  return (await renderApp('List')).user
 }
 
 const nodeButton = (name: RegExp) => screen.getByRole('button', { name })

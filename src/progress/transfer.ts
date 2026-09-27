@@ -41,6 +41,12 @@ export function importProgress(text: string, map: GroundworkMap): ImportResult {
       `This progress is for map "${String(data.map)}", not "${map.id}".`,
     )
   }
+  if (
+    data.last_opened !== undefined &&
+    !map.nodes.some((n) => n.id === data.last_opened)
+  ) {
+    errors.push(`last_opened "${String(data.last_opened)}" is not in the map.`)
+  }
   if (!isRecord(data.nodes)) {
     errors.push('"nodes" must be an object keyed by node id.')
     return { ok: false, errors }
